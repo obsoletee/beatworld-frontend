@@ -66,7 +66,7 @@ export const LeftSidebar = () => {
                 <Link
                   to={`/album/${album._id}`}
                   key={album._id}
-                  className="p-2 hover:bg-zinc-800 rounded-md flex items-center gap-3 group cursor-pointer"
+                  className="p-2 hover:bg-zinc-800 rounded-md flex items-center gap-3 group cursor-pointer transition-all"
                 >
                   <img
                     src={album.imageUrl}
