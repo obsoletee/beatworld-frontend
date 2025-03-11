@@ -15,7 +15,7 @@ export const Topbar = () => {
           </Link>
         )}
         <SignedIn>
-          <SignOutButton />
+          <SignOutButton className="cursor-pointer" />
         </SignedIn>
         <SignedOut>
           <SignInOAuthButtons />
