@@ -15,7 +15,6 @@ export const LeftSidebar = () => {
     fetchAlbums();
   }, [fetchAlbums]);
 
-  console.log(albums);
   return (
     <div className="h-full flex flex-col gap-2">
       <div className="rounded-lg bg-zinc-900 p-4">
@@ -64,7 +63,7 @@ export const LeftSidebar = () => {
             ) : (
               albums.map((album) => (
                 <Link
-                  to={`/album/${album._id}`}
+                  to={`/albums/${album._id}`}
                   key={album._id}
                   className="p-2 hover:bg-zinc-800 rounded-md flex items-center gap-3 group cursor-pointer transition-all"
                 >
