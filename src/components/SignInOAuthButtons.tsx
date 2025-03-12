@@ -17,7 +17,7 @@ export const SignInOAuthButtons = () => {
   return (
     <Button
       variant={'secondary'}
-      className="w-full text-white border-zinc-200 h-11 cursor-pointer"
+      className="w-full text-white border-zinc-200 cursor-pointer size-10"
       onClick={signInWithGoogle}
     >
       Continue with Google
