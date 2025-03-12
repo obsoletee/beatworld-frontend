@@ -1,14 +1,16 @@
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMusicStore } from '@/stores/useMusicStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { Song } from '@/types';
-import { Clock, Play } from 'lucide-react';
+import { Clock, Pause, Play } from 'lucide-react';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 export const AlbumPage = () => {
   const { albumId } = useParams();
   const { currentAlbum, fetchAlbumById, isLoading } = useMusicStore();
+  const { currentSong, isPlaiyng, playAlbum, togglePlay } = usePlayerStore();
 
   const formatDuration = (duration: number) => {
     const minutes = Math.floor(duration / 60);
@@ -21,6 +23,21 @@ export const AlbumPage = () => {
     }
   }, [albumId, fetchAlbumById]);
 
+  const handlePlayAlbum = () => {
+    if (!currentAlbum) return;
+    const isCurrentAlbumPlayin = currentAlbum?.songs.some(
+      (song) => song._id === currentSong?._id,
+    );
+    if (isCurrentAlbumPlayin) {
+      togglePlay();
+    } else {
+      playAlbum(currentAlbum?.songs);
+    }
+  };
+  const handlePlaySong = (index: number) => {
+    if (!currentAlbum) return;
+    playAlbum(currentAlbum?.songs, index);
+  };
   if (isLoading) return null;
 
   return (
@@ -53,10 +70,15 @@ export const AlbumPage = () => {
 
             <div className="px-6 pb-4 flex items-center gap-6">
               <Button
+                onClick={handlePlayAlbum}
                 size="icon"
                 className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-400 hover:scale-105 transition-all cursor-pointer"
               >
-                <Play className="h-7 w-7 text-black" />
+                {isPlaiyng ? (
+                  <Pause className="size-5 z-5 text-black" />
+                ) : (
+                  <Play className="size-5 z-5 text-black" />
+                )}
               </Button>
             </div>
 
@@ -73,36 +95,87 @@ export const AlbumPage = () => {
                 <div className="space-y-2 py-4">
                   {currentAlbum?.songs
                     .sort((a: Song, b: Song) => a.trackNumber - b.trackNumber)
-                    .map((song, index) => (
-                      <div
-                        key={song._id}
-                        className="grid grid-cols-[16px_4fr_2fr_1fr] gap-4 px-4 py-2 text-sm text-zinc-400 hover:bg-white/5 rounded-md group cursor-pointer transition-all"
-                      >
-                        <div className="flex items-center justify-center">
-                          <span className="group-hover:hidden">
-                            {index + 1}
-                          </span>
-                          <Play className="h-4 w-4 hidden group-hover:block" />
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={song.imageUrl}
-                            alt={song.title}
-                            className="size-10"
-                          />
-                          <div>
-                            <div className="font-medium text-white">
-                              {song.title}
+                    .map((song, index) => {
+                      const isCurrentSong = currentSong?._id === song._id;
+                      return (
+                        <div
+                          key={song._id}
+                          onDoubleClick={() => handlePlaySong(index)}
+                          className="grid grid-cols-[16px_4fr_2fr_1fr] gap-4 px-4 py-2 text-sm text-zinc-400 hover:bg-white/5 rounded-md group cursor-pointer transition-all"
+                        >
+                          <div className="flex items-center justify-center">
+                            {!isCurrentSong && !isPlaiyng && (
+                              <span className="group-hover:hidden">
+                                {index + 1}
+                              </span>
+                            )}
+                            {!isCurrentSong && !isPlaiyng && (
+                              <Play
+                                className="h-4 w-4 hidden group-hover:block"
+                                onClick={() => handlePlaySong(index)}
+                              />
+                            )}
+                            {isCurrentSong && isPlaiyng && (
+                              <span className="group-hover:hidden text-emerald-500">
+                                ♫
+                              </span>
+                            )}
+                            {isCurrentSong && isPlaiyng && (
+                              <Pause
+                                className="h-4 w-4 text-emerald-500 hidden group-hover:block"
+                                onClick={togglePlay}
+                              />
+                            )}
+                            {isCurrentSong && !isPlaiyng && (
+                              <span className="group-hover:hidden text-emerald-500">
+                                {index + 1}
+                              </span>
+                            )}
+                            {isCurrentSong && !isPlaiyng && (
+                              <Play
+                                className="h-4 w-4 hidden text-emerald-500 group-hover:block"
+                                onClick={() => handlePlaySong(index)}
+                              />
+                            )}
+                            {!isCurrentSong && isPlaiyng && (
+                              <span className="group-hover:hidden">
+                                {index + 1}
+                              </span>
+                            )}
+                            {!isCurrentSong && isPlaiyng && (
+                              <Play
+                                className="h-4 w-4 hidden group-hover:block"
+                                onClick={() => handlePlaySong(index)}
+                              />
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={song.imageUrl}
+                              alt={song.title}
+                              className="size-10"
+                            />
+                            <div>
+                              {isCurrentSong ? (
+                                <div className="font-medium text-emerald-500">
+                                  {song.title}
+                                </div>
+                              ) : (
+                                <div className="font-medium text-white">
+                                  {song.title}
+                                </div>
+                              )}
+
+                              <div>{song.artist}</div>
                             </div>
-                            <div>{song.artist}</div>
+                          </div>
+                          <div className="flex items-center">{song.plays}</div>
+                          <div className="flex items-center">
+                            {formatDuration(song.duration)}
                           </div>
                         </div>
-                        <div className="flex items-center">{song.plays}</div>
-                        <div className="flex items-center">
-                          {formatDuration(song.duration)}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                 </div>
               </div>
             </div>
