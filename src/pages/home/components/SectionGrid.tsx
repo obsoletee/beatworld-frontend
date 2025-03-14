@@ -18,8 +18,6 @@ export const SectionGrid = ({ title, songs, isLoading }: SectionGridProps) => {
     fetchUsers();
   }, [fetchUsers]);
 
-  console.log(users);
-  console.log(songs);
   if (isLoading) return <SectionGridSkeleton />;
   return (
     <div className="mb-8">

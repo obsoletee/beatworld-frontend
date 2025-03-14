@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { useChatStore } from '@/stores/useChatStore';
+import { useMusicStore } from '@/stores/useMusicStore';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 import { formatTime } from '@/utils';
 import {
@@ -26,12 +27,16 @@ export const PlaybackControls = () => {
     playPrevious,
   } = usePlayerStore();
 
+  const { updatePlays } = useMusicStore();
+
   const { users, fetchUsers } = useChatStore();
 
   const [volume, setVolume] = useState(75);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playTime, setPlayTime] = useState(0);
+  const [isPlaysUpdated, setIsPlaysUpdated] = useState(false);
 
   useEffect(() => {
     audioRef.current = document.querySelector('audio');
@@ -39,8 +44,17 @@ export const PlaybackControls = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
-    const updateDuration = () => setDuration(audio.duration);
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+      if (playTime < 117) {
+        setPlayTime((prev) => prev + 1);
+      }
+    };
+    const updateDuration = () => {
+      setDuration(audio.duration);
+      setPlayTime(0);
+      setIsPlaysUpdated(false);
+    };
 
     audio.addEventListener('timeupdate', updateTime);
     audio.addEventListener('loadedmetadata', updateDuration);
@@ -55,7 +69,7 @@ export const PlaybackControls = () => {
       audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, [currentSong]);
+  }, [currentSong, playTime]);
 
   useEffect(() => {
     fetchUsers();
@@ -66,6 +80,15 @@ export const PlaybackControls = () => {
       audioRef.current.currentTime = value[0];
     }
   };
+
+  useEffect(() => {
+    if (currentSong) {
+      if (playTime > 115 && !isPlaysUpdated) {
+        updatePlays(currentSong._id);
+        setIsPlaysUpdated(true);
+      }
+    }
+  }, [currentSong, playTime, updatePlays, isPlaysUpdated]);
 
   return (
     <footer className="h-20 sm:h-24 bg-zinc-900 border-t border-zinc-800 px-4">

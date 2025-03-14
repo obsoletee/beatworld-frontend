@@ -19,6 +19,7 @@ export interface Album {
   title: string;
   ownerId: string;
   imageUrl: string;
+  description: string;
   songs: Song[];
   createdAt: Date;
   updatedAt: Date;

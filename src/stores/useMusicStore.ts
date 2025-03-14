@@ -25,6 +25,7 @@ interface MusicStore {
   fetchTrendingSongs: () => Promise<void>;
   deleteSong: (id: string) => Promise<void>;
   deleteAlbum: (id: string) => Promise<void>;
+  updatePlays: (id: string) => Promise<void>;
 }
 
 export const useMusicStore = create<MusicStore>((set) => ({
@@ -183,6 +184,21 @@ export const useMusicStore = create<MusicStore>((set) => ({
       //@ts-expect-error error is type of unknown
       set({ error: error.response.data.message });
       toast.error('Error deleting album');
+    } finally {
+      set({ isSongsLoading: false });
+    }
+  },
+
+  updatePlays: async (id) => {
+    try {
+      set({
+        error: null,
+        isSongsLoading: true,
+      });
+      await axiosInstance.patch(`/songs/updatePlays/${id}`);
+    } catch (error) {
+      //@ts-expect-error error is type of unknown
+      set({ error: error.response.data.message });
     } finally {
       set({ isSongsLoading: false });
     }

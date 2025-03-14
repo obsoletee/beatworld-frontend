@@ -19,20 +19,14 @@ import {
 import { axiosInstance } from '@/lib/axios';
 import { useChatStore } from '@/stores/useChatStore';
 import { useMusicStore } from '@/stores/useMusicStore';
-import { useUser } from '@clerk/clerk-react';
 
 import { Plus, Upload } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 
 export const AddSongDialog = () => {
   const { albums } = useMusicStore();
   const { users, fetchUsers } = useChatStore();
-  const { user } = useUser();
-
-  const currentUser = useMemo(() => {
-    return users.find((u) => u.clerkId === user?.id) || null;
-  }, [user, users]);
 
   const [songDialogOpen, setSongDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +87,7 @@ export const AddSongDialog = () => {
 
       setNewSong({ title: '', artist: '', album: '', duration: 0 });
       setFiles({ audioMp3: null, audioWav: null, stems: null, image: null });
+      setSongDialogOpen(false);
       toast.success('Song added successfully!');
     } catch (error) {
       return toast.error(`An error occured while uploading song ${error}`);
@@ -124,6 +119,7 @@ export const AddSongDialog = () => {
         </DialogHeader>
         <div className="space-y-4 py-4">
           <input
+            disabled={isLoading}
             type="file"
             accept="audio/mp3"
             ref={audioMp3InputRef}
@@ -133,6 +129,7 @@ export const AddSongDialog = () => {
             }
           />
           <input
+            disabled={isLoading}
             type="file"
             accept="audio/wav"
             ref={audioWavInputRef}
@@ -142,6 +139,7 @@ export const AddSongDialog = () => {
             }
           />
           <input
+            disabled={isLoading}
             type="file"
             accept=".zip,.rar,.7z,.tar,.gz"
             ref={stemsInputRef}
@@ -151,6 +149,7 @@ export const AddSongDialog = () => {
             }
           />
           <input
+            disabled={isLoading}
             type="file"
             accept="image/*"
             ref={imageInputRef}
@@ -257,7 +256,6 @@ export const AddSongDialog = () => {
             <label className="text-sm font-medium">Artist</label>
             <Select
               disabled={isLoading}
-              defaultValue={currentUser?._id}
               required
               value={newSong.artist}
               onValueChange={(value) =>
@@ -329,7 +327,13 @@ export const AddSongDialog = () => {
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={
+              isLoading ||
+              !files.audioMp3 ||
+              !newSong.title ||
+              !newSong.artist ||
+              !newSong.duration
+            }
             className="bg-emerald-500 hover:bg-emerald-600 text-black border-emerald-400/80 cursor-pointer transition-all"
           >
             {isLoading ? 'Uploading...' : 'Add Song'}

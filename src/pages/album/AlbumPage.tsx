@@ -50,7 +50,7 @@ export const AlbumPage = () => {
               <img
                 src={currentAlbum?.imageUrl}
                 alt={currentAlbum?.title}
-                className="w-[240px] h-[240px] shadow-xl"
+                className="w-[240px] h-[240px] shadow-xl object-cover"
               />
               <div className="flex flex-col justify-end">
                 <p className="text-sm font-medium">Album</p>
@@ -156,7 +156,7 @@ export const AlbumPage = () => {
                             <img
                               src={song.imageUrl}
                               alt={song.title}
-                              className="size-10"
+                              className="size-10 object-cover"
                             />
                             <div>
                               {isCurrentSong ? (
@@ -175,7 +175,7 @@ export const AlbumPage = () => {
                                 )
                                   ? users.find(
                                       (user) => user._id === song.artistId,
-                                    )!.fullName
+                                    )!.username
                                   : 'Not Found'}
                               </div>
                             </div>
@@ -191,36 +191,11 @@ export const AlbumPage = () => {
               </div>
             </div>
             <div className="bg-black/20 backdrop-blur-sm grow px-6 pb-4 flex flex-col gap-3">
-              <div className="text-white">Description:</div>
+              <div className="text-white">Album Description:</div>
               <div className="text-sm text-zinc-400">
-                <span>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Beatae, modi architecto nisi eaque laudantium nihil ipsum,
-                  rerum quia corrupti doloremque cumque rem exercitationem.
-                  Facere, facilis veritatis. Quisquam iure illum dignissimos
-                  reiciendis unde, distinctio culpa rerum aliquid hic
-                  perspiciatis aut consequuntur dolorem illo excepturi harum
-                  nostrum iusto, vitae nemo quo eum odio ipsam labore eveniet!
-                  Voluptatibus rem iste nulla et consectetur commodi neque harum
-                  ab. Minima, sapiente magni placeat pariatur deleniti
-                  reiciendis fuga facilis recusandae. Temporibus voluptate nulla
-                  dolor facere aliquam quae rem quam optio porro reprehenderit
-                  deleniti deserunt aperiam voluptatem aut eius ea, sapiente
-                  tempore ratione impedit ipsum dicta explicabo laboriosam? Vel
-                  perferendis eligendi ipsam laudantium at animi nesciunt iusto
-                  qui ab, molestias consequatur maxime fugiat quisquam quo
-                  molestiae soluta omnis. Nobis eveniet veritatis eum, quasi
-                  porro doloribus provident quam reprehenderit dolorem in vitae
-                  voluptatum facere impedit animi voluptates excepturi? Natus
-                  qui temporibus facere totam iste assumenda ex ipsam iure earum
-                  magnam? In, dignissimos. Optio repellat fuga aliquid cumque
-                  quaerat sapiente velit officiis, voluptatum aliquam tempora
-                  nostrum sint totam cupiditate aut impedit vitae provident
-                  omnis ex? Aut illo amet est facilis excepturi optio fuga
-                  repudiandae possimus recusandae iure. Nobis, at. Similique
-                  dicta perspiciatis animi optio inventore voluptatum odio, eius
-                  error.
-                </span>
+                {currentAlbum?.description
+                  ? currentAlbum.description
+                  : 'No description'}
               </div>
             </div>
           </div>

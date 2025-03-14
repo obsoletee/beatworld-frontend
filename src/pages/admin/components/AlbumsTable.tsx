@@ -9,20 +9,21 @@ import {
 } from '@/components/ui/table';
 import { useChatStore } from '@/stores/useChatStore';
 import { useMusicStore } from '@/stores/useMusicStore';
-import { Trash2 } from 'lucide-react';
+import { Calendar, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-export const SongsTable = () => {
-  const { songs, isSongsLoading, error, deleteSong } = useMusicStore();
+export const AlbumsTable = () => {
+  const { albums, deleteAlbum, isAlbumsLoading, error } = useMusicStore();
   const { users, fetchUsers } = useChatStore();
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
-  if (isSongsLoading) {
+  if (isAlbumsLoading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="text-zinc-400">Loading songs...</div>
+        <div className="text-zinc-400">Loading albums...</div>
       </div>
     );
   }
@@ -39,29 +40,43 @@ export const SongsTable = () => {
     <Table>
       <TableHeader>
         <TableRow className="hover:bg-zinc-800/50">
-          <TableHead className="w-[50px]"></TableHead>
+          <TableHead className="w-[80px]"></TableHead>
           <TableHead>Title</TableHead>
-          <TableHead>Artist</TableHead>
-          <TableHead>Plays</TableHead>
+          <TableHead>Owner</TableHead>
+          <TableHead>Created At</TableHead>
+          <TableHead>Songs</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {songs.map((song) => (
-          <TableRow key={song._id} className="hover:bg-zinc-800/50">
+        {albums.map((album) => (
+          <TableRow key={album._id} className="hover:bg-zinc-800/50">
             <TableCell>
               <img
-                className="size-10 rounded object-cover"
-                src={song.imageUrl}
+                className="size-16 rounded object-cover"
+                src={album.imageUrl}
               />
             </TableCell>
-            <TableCell className="font-medium">{song.title}</TableCell>
+            <TableCell className="font-medium">
+              <Link
+                to={`/albums/${album._id}`}
+                className="cursor-pointer hover:underline"
+              >
+                {album.title}
+              </Link>
+            </TableCell>
             <TableCell>
-              {users.find((user) => user._id === song.artistId)
-                ? users.find((user) => user._id === song.artistId)!.username
+              {users.find((user) => user._id === album.ownerId)
+                ? users.find((user) => user._id === album.ownerId)!.username
                 : 'Not Found'}
             </TableCell>
-            <TableCell>{song.plays}</TableCell>
+            <TableCell>
+              <div className="flex items-center gap-1">
+                <Calendar className="size-4" />
+                {album.createdAt.toString().split('T')[0]}
+              </div>
+            </TableCell>
+            <TableCell>{album.songs.length + ' Songs'}</TableCell>
             <TableCell className="text-right">
               <div className="flex gap-2 justify-end">
                 <Button
@@ -69,7 +84,7 @@ export const SongsTable = () => {
                   size="sm"
                   className="text-red-400 hover:text-red-300 hover:bg-red-400/10 cursor-pointer"
                   onClick={() => {
-                    deleteSong(song._id);
+                    deleteAlbum(album._id);
                   }}
                 >
                   <Trash2 className="size-4" />
