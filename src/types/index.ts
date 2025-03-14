@@ -1,9 +1,11 @@
 export interface Song {
   _id: string;
   title: string;
-  artist: string;
+  artistId: string | null;
   imageUrl: string;
-  audioUrl: string;
+  audioMp3Url: string;
+  audioWavUrl: string;
+  audioStemsUrl: string;
   duration: number;
   plays: number;
   trackNumber: number;
@@ -15,9 +17,30 @@ export interface Song {
 export interface Album {
   _id: string;
   title: string;
-  artist: string;
+  ownerId: string;
   imageUrl: string;
   songs: Song[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Stats {
+  totalSongs: number;
+  totalAlbums: number;
+  totalUsers: number;
+  totalArtists: number;
+}
+
+export interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  username: string;
+  imageUrl: string;
+  clerkId: string;
+  following: string[];
+  followers: string[];
   createdAt: Date;
   updatedAt: Date;
 }

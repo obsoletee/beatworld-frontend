@@ -1,9 +1,16 @@
 import { FeaturedGridSkeleton } from '@/components/skeletons/FeaturedGridSkeleton';
 import { useMusicStore } from '@/stores/useMusicStore';
 import { PlayButton } from './PlayButton';
+import { useChatStore } from '@/stores/useChatStore';
+import { useEffect } from 'react';
 
 export const FeaturedSection = () => {
   const { isLoading, featuredSongs, error } = useMusicStore();
+  const { users, fetchUsers } = useChatStore();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   if (isLoading) return <FeaturedGridSkeleton />;
 
@@ -22,7 +29,11 @@ export const FeaturedSection = () => {
           />
           <div className="flex-1 p-4">
             <p className="font-medium truncate">{song.title}</p>
-            <p className="text-sm text-zinc-400 truncate">{song.artist}</p>
+            <p className="text-sm text-zinc-400 truncate">
+              {users.find((user) => user._id === song.artistId)
+                ? users.find((user) => user._id === song.artistId)!.username
+                : 'Not Found'}
+            </p>
           </div>
           <PlayButton song={song} />
         </div>

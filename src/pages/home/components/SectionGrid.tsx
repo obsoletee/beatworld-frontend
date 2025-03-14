@@ -2,6 +2,8 @@ import { SectionGridSkeleton } from '@/components/skeletons/SectionGridSkeleton'
 import { Button } from '@/components/ui/button';
 import { Song } from '@/types';
 import { PlayButton } from './PlayButton';
+import { useChatStore } from '@/stores/useChatStore';
+import { useEffect } from 'react';
 
 type SectionGridProps = {
   title: string;
@@ -10,6 +12,14 @@ type SectionGridProps = {
 };
 
 export const SectionGrid = ({ title, songs, isLoading }: SectionGridProps) => {
+  const { users, fetchUsers } = useChatStore();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  console.log(users);
+  console.log(songs);
   if (isLoading) return <SectionGridSkeleton />;
   return (
     <div className="mb-8">
@@ -39,7 +49,11 @@ export const SectionGrid = ({ title, songs, isLoading }: SectionGridProps) => {
               <PlayButton song={song} size={'large'} />
             </div>
             <h3 className="font-medium mb-2 truncate">{song.title}</h3>
-            <p className="text-sm text-zinc-400 truncate">{song.artist}</p>
+            <p className="text-sm text-zinc-400 truncate">
+              {users.find((user) => user._id === song.artistId)
+                ? users.find((user) => user._id === song.artistId)!.username
+                : 'Not Found'}
+            </p>
           </div>
         ))}
       </div>

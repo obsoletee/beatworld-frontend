@@ -44,7 +44,7 @@ export const FriendsActivity = () => {
                   <div className="flex items-start gap-3">
                     <div className="relative">
                       <Avatar className="size-10 border border-zinc-800">
-                        <AvatarImage src={user.imageUrl} alt={user.fullName} />
+                        <AvatarImage src={user.imageUrl} alt={user.username} />
                         <AvatarFallback>{user.fullName[0]}</AvatarFallback>
                       </Avatar>
                       <div
@@ -55,7 +55,7 @@ export const FriendsActivity = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-sm text-white">
-                          {user.fullName}
+                          {user.username}
                         </span>
                         {isPlaying && (
                           <Music className="size-3.5 text-emerald-400 shrink-0" />

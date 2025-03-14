@@ -1,8 +1,9 @@
 import { axiosInstance } from '@/lib/axios';
+import { User } from '@/types';
 import { create } from 'zustand';
 
 interface ChatStore {
-  users: any[];
+  users: User[];
   isLoading: boolean;
   error: string | null;
   fetchUsers: () => Promise<void>;

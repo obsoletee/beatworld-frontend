@@ -25,11 +25,11 @@ export const AudioPlayer = () => {
   useEffect(() => {
     if (!audioRef.current || !currentSong) return;
     const audio = audioRef.current;
-    const isSongChange = prevSongRef.current !== currentSong?.audioUrl;
+    const isSongChange = prevSongRef.current !== currentSong?.audioMp3Url;
     if (isSongChange) {
-      audio.src = currentSong?.audioUrl;
+      audio.src = currentSong?.audioMp3Url;
       audio.currentTime = 0;
-      prevSongRef.current = currentSong?.audioUrl;
+      prevSongRef.current = currentSong?.audioMp3Url;
       if (isPlaiyng) audio.play();
     }
   }, [currentSong, isPlaiyng]);

@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import { useChatStore } from '@/stores/useChatStore';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 import { formatTime } from '@/utils';
 import {
@@ -24,6 +25,8 @@ export const PlaybackControls = () => {
     playNext,
     playPrevious,
   } = usePlayerStore();
+
+  const { users, fetchUsers } = useChatStore();
 
   const [volume, setVolume] = useState(75);
   const [duration, setDuration] = useState(0);
@@ -54,6 +57,10 @@ export const PlaybackControls = () => {
     };
   }, [currentSong]);
 
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
   const handleSeek = (value: number[]) => {
     if (audioRef.current) {
       audioRef.current.currentTime = value[0];
@@ -75,7 +82,12 @@ export const PlaybackControls = () => {
                 <div className="font-medium truncate hover:underline cursor-pointer">
                   {currentSong.title}
                 </div>
-                <div className="text-sm text-zinc-400 truncate hover-underline cursor-pointer"></div>
+                <div className="text-sm text-zinc-400 truncate hover-underline cursor-pointer">
+                  {users.find((u) => u._id === currentSong.artistId)
+                    ? users.find((u) => u._id === currentSong.artistId)!
+                        .username
+                    : 'Not Found'}
+                </div>
               </div>
             </>
           )}

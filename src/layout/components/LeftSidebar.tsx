@@ -3,6 +3,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useChatStore } from '@/stores/useChatStore';
 import { useMusicStore } from '@/stores/useMusicStore';
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import {
@@ -17,10 +18,12 @@ import { Link } from 'react-router-dom';
 export const LeftSidebar = () => {
   const { isAdmin } = useAuthStore();
   const { albums, fetchAlbums, isLoading } = useMusicStore();
+  const { users, fetchUsers } = useChatStore();
 
   useEffect(() => {
     fetchAlbums();
-  }, [fetchAlbums]);
+    fetchUsers();
+  }, [fetchAlbums, fetchUsers]);
 
   return (
     <div className="h-full flex flex-col gap-2">
@@ -119,7 +122,11 @@ export const LeftSidebar = () => {
                     <div className="flex-1 min-w-0 hidden md:block">
                       <p className="font-medium truncate">{album.title}</p>
                       <p className="text-sm text-zinc-400 truncate">
-                        Album ● {album.artist}
+                        Album ●{' '}
+                        {users.find((user) => user._id === album.ownerId)
+                          ? users.find((user) => user._id === album.ownerId)!
+                              .username
+                          : 'Not Found'}
                       </p>
                     </div>
                   </Link>

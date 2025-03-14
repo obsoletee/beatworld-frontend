@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useChatStore } from '@/stores/useChatStore';
 import { useMusicStore } from '@/stores/useMusicStore';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 import { Song } from '@/types';
@@ -12,12 +13,14 @@ export const AlbumPage = () => {
   const { albumId } = useParams();
   const { currentAlbum, fetchAlbumById, isLoading } = useMusicStore();
   const { currentSong, isPlaiyng, playAlbum, togglePlay } = usePlayerStore();
+  const { users, fetchUsers } = useChatStore();
 
   useEffect(() => {
     if (albumId) {
       fetchAlbumById(albumId);
+      fetchUsers();
     }
-  }, [albumId, fetchAlbumById]);
+  }, [albumId, fetchAlbumById, fetchUsers]);
 
   const handlePlayAlbum = () => {
     if (!currentAlbum) return;
@@ -56,7 +59,11 @@ export const AlbumPage = () => {
                 </h1>
                 <div className="flex items-center gap-2 text-sm text-zinc-100">
                   <span className="font-medium text-white">
-                    {currentAlbum?.artist}
+                    {users.find((user) => user._id === currentAlbum?.ownerId)
+                      ? users.find(
+                          (user) => user._id === currentAlbum?.ownerId,
+                        )!.username
+                      : 'Not Found'}
                   </span>
                   <span>●</span>
                   <span className="">{currentAlbum?.songs.length} songs</span>
@@ -162,7 +169,15 @@ export const AlbumPage = () => {
                                 </div>
                               )}
 
-                              <div>{song.artist}</div>
+                              <div>
+                                {users.find(
+                                  (user) => user._id === song.artistId,
+                                )
+                                  ? users.find(
+                                      (user) => user._id === song.artistId,
+                                    )!.fullName
+                                  : 'Not Found'}
+                              </div>
                             </div>
                           </div>
                           <div className="flex items-center">{song.plays}</div>
