@@ -3,11 +3,14 @@ import { useAuth } from '@clerk/clerk-react';
 import { ReactNode, useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useChatStore } from '@/stores/useChatStore';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const [loading, setLoading] = useState(true);
   const { checkAdminStatus } = useAuthStore();
+
+  const { initSocket, disconnectSocket } = useChatStore();
 
   const updateApiToken = (token: string | null) => {
     if (token) {
@@ -25,6 +28,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updateApiToken(token);
         if (token) {
           await checkAdminStatus();
+          if (userId) {
+            initSocket(userId);
+          }
         }
       } catch (error) {
         updateApiToken(null);
@@ -35,7 +41,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     initAuth();
-  }, [getToken]);
+
+    return () => disconnectSocket();
+  }, [getToken, checkAdminStatus, disconnectSocket, initSocket, userId]);
 
   if (loading)
     return (
