@@ -61,7 +61,7 @@ export const LeftSidebar = () => {
                 to={'/admin'}
                 className={cn(
                   buttonVariants({
-                    variant: 'outline',
+                    variant: 'ghost',
                     className:
                       'truncate w-full justify-start text-white hover:bg-zinc-800 transition-all',
                   }),
@@ -75,7 +75,7 @@ export const LeftSidebar = () => {
                 to={'/'}
                 className={cn(
                   buttonVariants({
-                    variant: 'outline',
+                    variant: 'ghost',
                     className:
                       'truncate w-full justify-start text-white hover:bg-zinc-800 transition-all',
                   }),
