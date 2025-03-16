@@ -97,7 +97,7 @@ export const AlbumPage = () => {
               <div className="px-6">
                 <div className="space-y-2 py-4">
                   {currentAlbum?.songs
-                    .sort((a: Song, b: Song) => a.trackNumber - b.trackNumber)
+                    .sort((a: Song, b: Song) => a.title.localeCompare(b.title))
                     .map((song, index) => {
                       const isCurrentSong = currentSong?._id === song._id;
                       return (

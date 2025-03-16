@@ -46,7 +46,7 @@ export const PlaybackControls = () => {
 
     const updateTime = () => {
       setCurrentTime(audio.currentTime);
-      if (playTime < 117) {
+      if (playTime < 100) {
         setPlayTime((prev) => prev + 1);
       }
     };
@@ -83,7 +83,7 @@ export const PlaybackControls = () => {
 
   useEffect(() => {
     if (currentSong) {
-      if (playTime > 115 && !isPlaysUpdated) {
+      if (playTime > 98 && !isPlaysUpdated) {
         updatePlays(currentSong._id);
         setIsPlaysUpdated(true);
       }

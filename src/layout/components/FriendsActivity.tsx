@@ -81,8 +81,7 @@ export const FriendsActivity = () => {
                           <div className="mt-1">
                             {' '}
                             <div className="mt-1 text-sm text-white font-medium truncate">
-                              Listen to{' '}
-                              {activity.replace('Playing', '').split(' by ')[0]}
+                              {activity.split(' by ')[0]}
                             </div>
                             <div className="text-xs text-zinc-400 truncate">
                               by {activity.split(' by ')[1]}
