@@ -1,5 +1,6 @@
 import { Song } from '@/types';
 import { create } from 'zustand';
+import { useChatStore } from './useChatStore';
 
 interface PlayerStore {
   currentSong: Song | null;
@@ -13,6 +14,7 @@ interface PlayerStore {
   playNext: () => void;
   playPrevious: () => void;
 }
+
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
   currentSong: null,
   isPlaiyng: false,
@@ -29,6 +31,19 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     if (songs.length === 0) return;
 
     const song = songs[startIndex];
+
+    const socket = useChatStore.getState().socket;
+    const users = useChatStore.getState().users;
+
+    if (socket.auth) {
+      socket.emit('update_activity', {
+        userId: socket.auth.userId,
+        activity: `Playing ${song.title} by ${
+          users.find((user) => user._id === song.artistId)?.username
+        }`,
+      });
+    }
+
     set({
       queue: songs,
       currentSong: song,
@@ -40,6 +55,19 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     if (!song) return;
 
     const songIndex = get().queue.findIndex((s) => s._id === song._id);
+
+    const socket = useChatStore.getState().socket;
+    const users = useChatStore.getState().users;
+
+    if (socket.auth) {
+      socket.emit('update_activity', {
+        userId: socket.auth.userId,
+        activity: `Playing ${song.title} by ${
+          users.find((user) => user._id === song.artistId)?.username
+        }`,
+      });
+    }
+
     set({
       currentSong: song,
       isPlaiyng: true,
@@ -49,6 +77,23 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   togglePlay: () => {
     const willStartPlaying = !get().isPlaiyng;
 
+    const currentSong = get().currentSong;
+    const socket = useChatStore.getState().socket;
+    const users = useChatStore.getState().users;
+
+    if (socket.auth) {
+      socket.emit('update_activity', {
+        userId: socket.auth.userId,
+        activity:
+          willStartPlaying && currentSong
+            ? `Playing ${currentSong.title} by ${
+                users.find((user) => user._id === currentSong.artistId)
+                  ?.username
+              } `
+            : 'Idle',
+      });
+    }
+
     set({ isPlaiyng: willStartPlaying });
   },
   playNext: () => {
@@ -57,9 +102,28 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
     if (nextIndex < queue.length) {
       const nextSong = queue[nextIndex];
+      const socket = useChatStore.getState().socket;
+      const users = useChatStore.getState().users;
+
+      if (socket.auth) {
+        socket.emit('update_activity', {
+          userId: socket.auth.userId,
+          activity: `Playing ${nextSong.title} by ${
+            users.find((user) => user._id === nextSong.artistId)?.username
+          }`,
+        });
+      }
       set({ currentSong: nextSong, currentIndex: nextIndex, isPlaiyng: true });
     } else {
       set({ isPlaiyng: false });
+      const socket = useChatStore.getState().socket;
+
+      if (socket.auth) {
+        socket.emit('update_activity', {
+          userId: socket.auth.userId,
+          activity: `Idle`,
+        });
+      }
     }
   },
   playPrevious: () => {
@@ -68,9 +132,28 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
     if (prevIndex >= 0) {
       const prevSong = queue[prevIndex];
+      const socket = useChatStore.getState().socket;
+      const users = useChatStore.getState().users;
+
+      if (socket.auth) {
+        socket.emit('update_activity', {
+          userId: socket.auth.userId,
+          activity: `Playing ${prevSong.title} by ${
+            users.find((user) => user._id === prevSong.artistId)?.username
+          }`,
+        });
+      }
       set({ currentSong: prevSong, currentIndex: prevIndex, isPlaiyng: true });
     } else {
       set({ isPlaiyng: false });
+      const socket = useChatStore.getState().socket;
+
+      if (socket.auth) {
+        socket.emit('update_activity', {
+          userId: socket.auth.userId,
+          activity: `Idle`,
+        });
+      }
     }
   },
 }));

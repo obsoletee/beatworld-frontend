@@ -2,6 +2,7 @@ import { UserListSkeleton } from '@/components/skeletons/UserListSkeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useChatStore } from '@/stores/useChatStore';
+import { useUser } from '@clerk/clerk-react';
 
 export const UserList = () => {
   const {
@@ -12,6 +13,9 @@ export const UserList = () => {
     onlineUsers,
   } = useChatStore();
 
+  const { user } = useUser();
+  const filteredUsers = users.filter((u) => u.clerkId !== user?.id);
+
   return (
     <div className="border-r border-zinc-800 ">
       <div className="flex flex-col h-full">
@@ -20,7 +24,7 @@ export const UserList = () => {
             {isLoading ? (
               <UserListSkeleton />
             ) : (
-              users.map((user) => (
+              filteredUsers.map((user) => (
                 <div
                   key={user._id}
                   className={`flex items-center justify-center lg:justify-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${

@@ -10,7 +10,7 @@ export const Topbar = () => {
           alt="Beatworld logo"
           className="size-10"
         />
-        Beatworld
+        <div className="font-medium text-xl">Beatworld</div>
       </div>
       <div className="flex items-center gap-4">
         <SignedOut>

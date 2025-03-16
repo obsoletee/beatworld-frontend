@@ -3,7 +3,7 @@ import { Slider } from '@/components/ui/slider';
 import { useChatStore } from '@/stores/useChatStore';
 import { useMusicStore } from '@/stores/useMusicStore';
 import { usePlayerStore } from '@/stores/usePlayerStore';
-import { formatTime } from '@/utils';
+import { formatDuration } from '@/utils';
 import {
   Laptop2,
   ListMusic,
@@ -166,7 +166,7 @@ export const PlaybackControls = () => {
 
           <div className="hidden sm:flex items-center gap-2 w-full">
             <div className="text-xs text-zinc-400">
-              {formatTime(currentTime)}
+              {formatDuration(currentTime)}
             </div>
             <Slider
               value={[currentTime]}
@@ -175,7 +175,9 @@ export const PlaybackControls = () => {
               className="w-full hover:cursor-grab active:cursor-grabbing"
               onValueChange={handleSeek}
             />
-            <div className="text-xs text-zinc-400">{formatTime(duration)}</div>
+            <div className="text-xs text-zinc-400">
+              {formatDuration(duration)}
+            </div>
           </div>
         </div>
         <div className="hidden sm:flex items-center gap-4 min-w-[180px] w-[30%] justify-end">

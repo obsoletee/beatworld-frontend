@@ -34,7 +34,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   users: [],
   error: null,
   isLoading: false,
-  socket: null,
+  socket: socket,
   isConnected: false,
   onlineUsers: new Set(),
   userActivities: new Map(),

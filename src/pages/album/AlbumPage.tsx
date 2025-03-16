@@ -4,7 +4,7 @@ import { useChatStore } from '@/stores/useChatStore';
 import { useMusicStore } from '@/stores/useMusicStore';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 import { Song } from '@/types';
-import { formatTime } from '@/utils';
+import { formatDuration } from '@/utils';
 import { Clock, Pause, Play } from 'lucide-react';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -182,7 +182,7 @@ export const AlbumPage = () => {
                           </div>
                           <div className="flex items-center">{song.plays}</div>
                           <div className="flex items-center">
-                            {formatTime(song.duration)}
+                            {formatDuration(song.duration)}
                           </div>
                         </div>
                       );
